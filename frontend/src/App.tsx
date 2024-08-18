@@ -159,9 +159,9 @@ export function App() {
       <div className="border rounded-lg p-2 h-full">
         <Table>
           <TableHeader>
-            <TableHead>userId</TableHead>
-            <TableHead>id</TableHead>
-            <TableHead>title</TableHead>
+            <TableHead>Repo ID</TableHead>
+            <TableHead>Repo Name</TableHead>
+            <TableHead>Repo URL</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="m">Mudar Status</TableHead>
           </TableHeader>
