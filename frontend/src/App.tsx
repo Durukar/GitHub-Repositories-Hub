@@ -35,6 +35,7 @@ export function App() {
   const [checkBoxSelected, setCheckBoxSelected] = useState<{
     [key: number]: boolean
   }>({})
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -65,6 +66,7 @@ export function App() {
 
   const fetchGitRepos = async () => {
     try {
+      setLoading(true)
       setRepositorys([])
       setCheckBoxSelected({})
       const response = await axios.get<GitRepo[]>(
@@ -84,6 +86,7 @@ export function App() {
     } catch (error) {
       console.error('Error: ', error)
     }
+    setLoading(false)
   }
 
   const updateGitRepos = async (
@@ -96,7 +99,8 @@ export function App() {
         return
       }
 
-      await axios.patch(
+      setLoading(true)
+      const response = await axios.patch<GitRepo>(
         `https://api.github.com/repos/${name}/${projectName}`,
         {
           private: status,
@@ -109,13 +113,36 @@ export function App() {
         },
       )
 
-      setRepositorys([])
+      console.log(response)
+
       setCheckBoxSelected({})
-      await fetchGitRepos()
+      setRepositorys((prev) => {
+        console.log(prev)
+        const idx = prev?.findIndex((repo) => repo.id === response.data.id)
+        if (idx !== undefined && idx >= 0) {
+          prev?.splice(idx, 1, response.data)
+          console.log('Entrou no if')
+        }
+
+        return [...(prev || [])]
+      })
     } catch (error) {
       console.error('Error update Repositories: ', error)
     }
+
+    setLoading(false)
   }
+
+  // Descomentar caso queira realizar testes de fetch na api do GitHub
+  // useEffect(() => {
+  //   if (token && user) {
+  //     const timer = setInterval(fetchGitRepos, 3000)
+
+  //     return () => {
+  //       clearInterval(timer)
+  //     }
+  //   }
+  // })
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-2">
@@ -137,7 +164,7 @@ export function App() {
             onChange={handleTokenGitHub}
           />
 
-          <Button type="submit" onClick={fetchGitRepos}>
+          <Button type="submit" onClick={fetchGitRepos} disabled={loading}>
             <Search className="w-4 h-4 mr-2" />
             Localizar repositorios
           </Button>
@@ -178,11 +205,12 @@ export function App() {
                     key={i}
                   >
                     <Checkbox
+                      disabled={loading}
                       onClick={() => handleStatusChange(c.id)}
                       checked={checkBoxSelected[c.id] || false}
                     />
                     <Button
-                      disabled={!checkBoxSelected[c.id]}
+                      disabled={!checkBoxSelected[c.id] || loading}
                       onClick={() =>
                         handleChangeStatus(user, c.name, !c.private)
                       }
