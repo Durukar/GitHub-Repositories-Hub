@@ -113,15 +113,11 @@ export function App() {
         },
       )
 
-      console.log(response)
-
       setCheckBoxSelected({})
       setRepositorys((prev) => {
-        console.log(prev)
         const idx = prev?.findIndex((repo) => repo.id === response.data.id)
         if (idx !== undefined && idx >= 0) {
           prev?.splice(idx, 1, response.data)
-          console.log('Entrou no if')
         }
 
         return [...(prev || [])]
