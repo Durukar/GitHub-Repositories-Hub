@@ -1,4 +1,4 @@
-import { Github, Lock, Globe, ExternalLink, ChevronLeft, ChevronRight, LogOut, Copy, Check, AlertCircle } from 'lucide-react'
+import { Github, Lock, Globe, ExternalLink, ChevronLeft, ChevronRight, Copy, Check, AlertCircle } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ThemeProvider } from './components/theme/theme-provider'
@@ -157,7 +157,7 @@ export function App() {
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="w-px h-5 bg-border" />
 
                     <Button
